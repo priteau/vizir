@@ -5,10 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "vizir"
-    gem.summary = %Q{TODO}
+    gem.summary = "Growl notifications for Grid'5000 jobs"
     gem.email = "pierre.riteau@gmail.com"
     gem.homepage = "http://github.com/priteau/vizir"
     gem.authors = ["Pierre Riteau"]
+    gem.add_dependency "json"
+    gem.add_dependency "net-ssh-gateway"
+    gem.add_dependency "rest-client"
+    gem.add_dependency "ruby-growl"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 

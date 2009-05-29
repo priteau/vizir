@@ -1,6 +1,33 @@
-= vizir
+= Vizir
 
-Description goes here.
+    Disconnected from OAR job 960063
+
+Ever been disconnected from Grid'5000 machines with a message like this, losing part or all of your work?
+
+Vizir is a simple Ruby script that monitors your interactive jobs on Grid'5000[http://www.grid5000.org/].
+It triggers Growl[http://growl.info/] notifications when your reservations are going to terminate, allowing you to save your work and/or your deployed environments.
+
+Vizir only supports Mac OS X for now.
+
+== Getting Started
+
+Run the following if you haven't already:
+    $ gem sources -a http://gems.github.com
+
+Install the gem:
+    $ sudo gem install mojombo-jekyll
+
+Configure Growl to accept notifications. Go to the Growl preference panel, and in the Network options enable "Listen for incoming notifications" and "Allow remote application registration". Don't forget to setup a password.
+
+Run it in the background, using the <tt>--login</tt> switch with your Grid'5000 login name and the <tt>--password</tt> switch with your Growl password.
+
+    $ vizir --login priteau --password mygrowlpassword &
+
+== Getting the source
+
+Clone it from GitHub:
+
+    $ git clone git://github.com/priteau/vizir.git
 
 == Copyright
 
