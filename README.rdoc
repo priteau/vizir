@@ -1,0 +1,7 @@
+= vizir
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Pierre Riteau. See LICENSE for details.
