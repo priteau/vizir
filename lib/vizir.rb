@@ -1,10 +1,8 @@
 class Vizir
   def Vizir.humanize_time(time)
-    if time < 0 then
-      fail "Can't humanize negative period"
-    end
+    fail "Can't humanize negative period" if time < 0
 
-    if time >= 60 then
+    if time >= 60
       remaining_time = time / 60
       remaining_time_unit = "minute"
     else

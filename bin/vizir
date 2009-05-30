@@ -66,25 +66,19 @@ gateway, port = setup_ssh_tunnel
 api = RestClient::Resource.new(apiuri(port))
 
 sites = get(api, '/sites')
-if sites == nil then
-  exit 1
-end
+exit 1 if sites == nil
 sites.each do |site|
   site_name = site['site']
   unless IGNORE_SITES.include?(site_name)
     jobs = get(api, "#{site['uri']}/jobs")
-    if jobs == nil then
-      break
-    end
+    break if jobs == nil
     jobs.each do |job|
-      if job['owner'] == $login then
+      if job['owner'] == $login
         job_details = get(api, "#{job['uri']}")
-        if job_details == nil then
-          break
-        end
-        if job_details['jobType'] == 'INTERACTIVE' then
+        break if job_details == nil
+        if job_details['jobType'] == 'INTERACTIVE'
           remaining_sec = get_remaining_time(Integer(job_details['startTime']), Integer(job_details['walltime']))
-          if remaining_sec < ALERT_TIME then
+          if remaining_sec < ALERT_TIME
             remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
             notify_via_growl(job_details['Job_Id'], site_name.capitalize, remaining_time, remaining_time_unit)
           end
