@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby -w
 
+$:.unshift File.join(File.dirname(__FILE__), "..", "lib")
+
 require 'json'
 require 'net/ssh/gateway'
 require 'optparse'
 require 'rest_client'
 require 'ruby-growl'
+require 'vizir'
 
 ALERT_TIME = 600
 IGNORE_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
@@ -47,17 +50,6 @@ def get_remaining_time(starttime, walltime)
   remaining_sec = (Time.at(starttime + walltime) - Time.now).round
 end
 
-def humanize_time(time)
-  if time > 60 then
-    remaining_time = time / 60
-    remaining_time_unit = "minutes"
-  else
-    remaining_time = time
-    remaining_time_unit = "seconds"
-  end
-  return remaining_time, remaining_time_unit
-end
-
 $login = nil
 $password = nil
 opts = OptionParser.new
@@ -93,7 +85,7 @@ sites.each do |site|
         if job_details['jobType'] == 'INTERACTIVE' then
           remaining_sec = get_remaining_time(Integer(job_details['startTime']), Integer(job_details['walltime']))
           if remaining_sec < ALERT_TIME then
-            remaining_time, remaining_time_unit = humanize_time(remaining_sec)
+            remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
             notify_via_growl(job_details['Job_Id'], site_name.capitalize, remaining_time, remaining_time_unit)
           end
         end
