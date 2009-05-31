@@ -10,6 +10,7 @@ require 'ruby-growl'
 require 'vizir'
 
 ALERT_TIME = 600
+REFRESH_TIME = 600
 IGNORE_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
 
 def usage
@@ -46,8 +47,8 @@ def notify_via_growl(jobid, site_name, time, time_unit)
   g.notify("Job ending soon", "OAR job terminating soon", "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.")
 end
 
-def get_remaining_time(starttime, walltime)
-  remaining_sec = (Time.at(starttime + walltime) - Time.now).round
+def get_remaining_time(time)
+  return (time - Time.now).round
 end
 
 $login = nil
@@ -65,27 +66,44 @@ end
 gateway, port = setup_ssh_tunnel
 api = RestClient::Resource.new(apiuri(port))
 
-sites = get(api, '/sites')
-exit 1 if sites == nil
-sites.each do |site|
-  site_name = site['site']
-  unless IGNORE_SITES.include?(site_name)
-    jobs = get(api, "#{site['uri']}/jobs")
-    break if jobs == nil
-    jobs.each do |job|
-      if job['owner'] == $login
-        job_details = get(api, "#{job['uri']}")
-        break if job_details == nil
-        if job_details['jobType'] == 'INTERACTIVE'
-          remaining_sec = get_remaining_time(Integer(job_details['startTime']), Integer(job_details['walltime']))
-          if remaining_sec < ALERT_TIME
-            remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
-            notify_via_growl(job_details['Job_Id'], site_name.capitalize, remaining_time, remaining_time_unit)
+def learn_new_jobs(api)
+  $sites.each do |site|
+    site_name = site['site']
+    unless IGNORE_SITES.include?(site_name)
+      jobs = get(api, "#{site['uri']}/jobs")
+      break if jobs == nil
+      jobs.each do |job|
+        if job['owner'] == $login
+          job_details = get(api, "#{job['uri']}")
+          break if job_details == nil
+          if job_details['jobType'] == 'INTERACTIVE'
+            jobid = job_details['Job_Id']
+
+            # If we don't yet know the job, record it in $jobs
+            if $jobs[jobid].nil?
+              $jobs[jobid] = Vizir::Job.new(jobid, Time.at(Integer(job_details['startTime']) + Integer(job_details['walltime'])), site_name.capitalize)
+            end
           end
         end
       end
     end
   end
+end  
+
+$jobs = Hash.new
+$sites = get(api, '/sites')
+exit 1 if $sites == nil
+
+while true
+  learn_new_jobs(api)
+  $jobs.each do |jobid, job|
+    remaining_sec = get_remaining_time(job.end_time)
+    if remaining_sec < ALERT_TIME
+      remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
+      notify_via_growl(jobid, job.site_name, remaining_time, remaining_time_unit)
+    end
+  end
+  sleep REFRESH_TIME
 end
 
 gateway.shutdown!
