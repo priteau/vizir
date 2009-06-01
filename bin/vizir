@@ -16,7 +16,7 @@ REFRESH_TIME = 3600
 IGNORE_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
 
 def usage
-  puts 'usage: vizir [ -h | --help ] [ -l | --login login_name ] [ -p | --password mygrowlpassword ]'
+  puts 'usage: vizir [ -h | --help ] [ -l | --login login_name ]'
   exit 1
 end
 
@@ -58,14 +58,12 @@ def get_remaining_time(time)
 end
 
 $login = nil
-$password = nil
 opts = OptionParser.new
 opts.on('-h', '--help') { usage }
 opts.on('-l', '--login STRING', String) { |str| $login = str }
-opts.on('-p', '--password STRING', String) { |str| $password = str }
 opts.parse(ARGV)
 
-if $login == nil or $password == nil
+if $login == nil
   usage
 end
 
