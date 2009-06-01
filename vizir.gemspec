@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pierre Riteau"]
-  s.date = %q{2009-05-29}
+  s.date = %q{2009-06-01}
   s.default_executable = %q{vizir}
   s.email = %q{pierre.riteau@gmail.com}
   s.executables = ["vizir"]
@@ -43,17 +43,20 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<eventmachine>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_runtime_dependency(%q<net-ssh-gateway>, [">= 0"])
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
       s.add_runtime_dependency(%q<ruby-growl>, [">= 0"])
     else
+      s.add_dependency(%q<eventmachine>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<net-ssh-gateway>, [">= 0"])
       s.add_dependency(%q<rest-client>, [">= 0"])
       s.add_dependency(%q<ruby-growl>, [">= 0"])
     end
   else
+    s.add_dependency(%q<eventmachine>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<net-ssh-gateway>, [">= 0"])
     s.add_dependency(%q<rest-client>, [">= 0"])

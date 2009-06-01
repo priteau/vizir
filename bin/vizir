@@ -2,6 +2,7 @@
 
 $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
+require 'eventmachine'
 require 'json'
 require 'net/ssh/gateway'
 require 'optparse'
@@ -9,8 +10,9 @@ require 'rest_client'
 require 'ruby-growl'
 require 'vizir'
 
-ALERT_TIME = 600
-REFRESH_TIME = 600
+FIRST_ALERT_TIME = 600
+ALERT_PERIOD = 60
+REFRESH_TIME = 3600
 IGNORE_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
 
 def usage
@@ -48,7 +50,7 @@ def notify_via_growl(jobid, site_name, time, time_unit)
 end
 
 def get_remaining_time(time)
-  return (time - Time.now).round
+  return  (time - Time.now).round
 end
 
 $login = nil
@@ -88,22 +90,33 @@ def learn_new_jobs(api)
       end
     end
   end
-end  
+end
 
-$jobs = Hash.new
-$sites = get(api, '/sites')
-exit 1 if $sites == nil
+def first_ending_job
+  $jobs.sort{|a,b| a[1].end_time <=> b[1].end_time}.first
+end
 
-while true
-  learn_new_jobs(api)
+def alert_jobs
   $jobs.each do |jobid, job|
     remaining_sec = get_remaining_time(job.end_time)
-    if remaining_sec < ALERT_TIME
+    if remaining_sec < FIRST_ALERT_TIME
       remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
       notify_via_growl(jobid, job.site_name, remaining_time, remaining_time_unit)
     end
   end
-  sleep REFRESH_TIME
 end
+
+# Learn the Grid'5000 sites
+$jobs = Hash.new
+$sites = get(api, '/sites')
+exit 1 if $sites == nil
+
+learn_new_jobs(api)
+alert_jobs
+
+EventMachine::run {
+  EventMachine::PeriodicTimer.new(REFRESH_TIME) { learn_new_jobs }
+  EventMachine::PeriodicTimer.new(ALERT_PERIOD) { alert_jobs }
+}
 
 gateway.shutdown!

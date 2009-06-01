@@ -9,6 +9,7 @@ begin
     gem.email = "pierre.riteau@gmail.com"
     gem.homepage = "http://github.com/priteau/vizir"
     gem.authors = ["Pierre Riteau"]
+    gem.add_dependency "eventmachine"
     gem.add_dependency "json"
     gem.add_dependency "net-ssh-gateway"
     gem.add_dependency "rest-client"
