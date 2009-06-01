@@ -7,21 +7,23 @@ Ever been disconnected from Grid'5000 machines with a message like this, losing 
 Vizir is a simple Ruby script that monitors your interactive jobs on Grid'5000[http://www.grid5000.fr/].
 It triggers Growl[http://growl.info/] notifications when your reservations are going to terminate, allowing you to save your work and/or your deployed environments.
 
-Vizir only supports Mac OS X for now.
+Vizir only supports Mac OS X.
 
 == Getting Started
 
 Run the following if you haven't already:
+
     $ gem sources -a http://gems.github.com
 
 Install the gem:
+
     $ sudo gem install priteau-vizir
 
-Configure Growl to accept notifications. Go to the Growl preference panel, and in the Network options enable "Listen for incoming notifications" and "Allow remote application registration". Don't forget to setup a password.
+Vizir uses HotCocoa to trigger Growl notifications. HotCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leopard.
 
-Run it in the background, using the <tt>--login</tt> switch with your Grid'5000 login name and the <tt>--password</tt> switch with your Growl password.
+Run Vizir in the background, using the <tt>--login</tt> switch with your Grid'5000 login name.
 
-    $ vizir --login priteau --password mygrowlpassword &
+    $ vizir --login priteau &
 
 == Getting the source
 
