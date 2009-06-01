@@ -3,11 +3,11 @@
 $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'eventmachine'
+require 'growl'
 require 'json'
 require 'net/ssh/gateway'
 require 'optparse'
 require 'rest_client'
-require 'ruby-growl'
 require 'vizir'
 
 FIRST_ALERT_TIME = 600
@@ -44,9 +44,13 @@ def apiuri(port)
   return "https://localhost:#{port}/oargridapi"
 end
 
+def setup_growl
+  $growl = Growl::Notifier.sharedInstance
+  $growl.register('Vizir', ['Job ending soon'])
+end
+
 def notify_via_growl(jobid, site_name, time, time_unit)
-  g = Growl.new("localhost", "Vizir", ["Job ending soon"], nil, $password)
-  g.notify("Job ending soon", "OAR job terminating soon", "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.")
+  $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.")
 end
 
 def get_remaining_time(time)
@@ -67,6 +71,7 @@ end
 
 gateway, port = setup_ssh_tunnel
 api = RestClient::Resource.new(apiuri(port))
+setup_growl
 
 def learn_new_jobs(api)
   $sites.each do |site|
