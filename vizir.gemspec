@@ -44,22 +44,22 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<eventmachine>, [">= 0"])
+      s.add_runtime_dependency(%q<growlnotifier>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_runtime_dependency(%q<net-ssh-gateway>, [">= 0"])
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
-      s.add_runtime_dependency(%q<ruby-growl>, [">= 0"])
     else
       s.add_dependency(%q<eventmachine>, [">= 0"])
+      s.add_dependency(%q<growlnotifier>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<net-ssh-gateway>, [">= 0"])
       s.add_dependency(%q<rest-client>, [">= 0"])
-      s.add_dependency(%q<ruby-growl>, [">= 0"])
     end
   else
     s.add_dependency(%q<eventmachine>, [">= 0"])
+    s.add_dependency(%q<growlnotifier>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<net-ssh-gateway>, [">= 0"])
     s.add_dependency(%q<rest-client>, [">= 0"])
-    s.add_dependency(%q<ruby-growl>, [">= 0"])
   end
 end
