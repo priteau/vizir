@@ -10,10 +10,10 @@ begin
     gem.homepage = "http://github.com/priteau/vizir"
     gem.authors = ["Pierre Riteau"]
     gem.add_dependency "eventmachine"
+    gem.add_dependency "growlnotifier"
     gem.add_dependency "json"
     gem.add_dependency "net-ssh-gateway"
     gem.add_dependency "rest-client"
-    gem.add_dependency "ruby-growl"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
