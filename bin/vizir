@@ -58,7 +58,7 @@ def setup_growl
 end
 
 def notify_via_growl(jobid, site_name, time, time_unit)
-  $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.")
+  $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.", :sticky => true)
 end
 
 def get_remaining_time(time)
