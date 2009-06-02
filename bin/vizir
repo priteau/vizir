@@ -76,7 +76,7 @@ if $login == nil
 end
 
 gateway, port = setup_ssh_tunnel
-api = RestClient::Resource.new(apiuri(port))
+api = RestClient::Resource.new(apiuri(port), :timeout => 15)
 setup_growl
 
 def learn_new_jobs(api)
