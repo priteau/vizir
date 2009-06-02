@@ -23,6 +23,14 @@ end
 def get(api, uri)
   begin
     return JSON.parse(api[uri + '?structure=simple'].get(:accept => 'application/json'))
+  rescue RestClient::RequestTimeout => e
+    # This should really be elsewhere, but will do for now
+    # Were we querying a specific site? If yes, remove it from $sites
+    if uri =~ /\/sites\/(\w+)/
+      $sites.delete_if { |site| site['site'] == "#{$1}" }
+    else
+      raise e
+    end    
   rescue => e
     if e.respond_to?('http_code')
       puts "Error: #{e.http_code}:\n #{e.response.body}"
