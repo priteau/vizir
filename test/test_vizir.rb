@@ -40,7 +40,7 @@ class VizirTest < Test::Unit::TestCase
     ignored_sites = ["luxembourg", "portoalegre"]
     assert_equal(sites, Vizir.learn_sites(api, ignored_sites))
   end
-  
+
   context "A Job instance" do
     setup do
       @job_endtime = Time.at(123456789)
@@ -54,6 +54,16 @@ class VizirTest < Test::Unit::TestCase
 
       should 'be considered as ending soon' do
         assert_equal true, @job.should_be_ending?(@now)
+      end
+    end
+
+    context 'ending in more than FIRST_ALERT_TIME seconds' do
+      setup do
+        @now = Time.at(Integer(@job_endtime) - Integer(Vizir::FIRST_ALERT_TIME + 1))
+      end
+
+      should 'not be considered as ending soon' do
+        assert_equal false, @job.should_be_ending?(@now)
       end
     end
   end
