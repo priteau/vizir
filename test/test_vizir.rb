@@ -49,12 +49,13 @@ class VizirTest < Test::Unit::TestCase
 
     context 'ending in FIRST_ALERT_TIME seconds' do
       setup do
-        @time = Time.at(Integer(@job_endtime) + Integer(Vizir::FIRST_ALERT_TIME))
+        @now = Time.at(Integer(@job_endtime) - Integer(Vizir::FIRST_ALERT_TIME))
       end
 
       should 'be considered as ending soon' do
-        assert_equal true, @job.should_be_ending?(@time)
+        assert_equal true, @job.should_be_ending?(@now)
       end
     end
   end
+
 end
