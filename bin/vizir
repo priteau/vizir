@@ -9,7 +9,6 @@ require 'optparse'
 require 'rest_client'
 require 'vizir'
 
-FIRST_ALERT_TIME = 600
 ALERT_PERIOD = 60
 REFRESH_TIME = 3600
 
@@ -35,10 +34,6 @@ end
 
 def notify_via_growl(jobid, site_name, time, time_unit)
   $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.", :sticky => true)
-end
-
-def get_remaining_time(time)
-  return  (time - Time.now).round
 end
 
 $login = nil

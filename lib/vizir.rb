@@ -4,6 +4,7 @@ require 'restclient'
 module Vizir
   APIURL = "https://localhost:8080/oargridapi"
   IGNORED_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
+  FIRST_ALERT_TIME = 600
 
   def Vizir.humanize_time(time)
     fail "Can't humanize negative period" if time < 0
@@ -21,6 +22,10 @@ module Vizir
     end
 
     return remaining_time, remaining_time_unit
+  end
+
+  def Vizir.get_remaining_time(end_time, now)
+    return  (end_time - now).round
   end
 
   def Vizir.get(api, uri)
@@ -91,7 +96,7 @@ module Vizir
           $jobs.delete(jobid)
           next
         end
-        remaining_sec = get_remaining_time(job.end_time)
+        remaining_sec = Vizir.get_remaining_time(job.end_time, Time.now)
         if remaining_sec < 0
           $stderr.puts "Error: negative time"
           next
@@ -119,8 +124,8 @@ module Vizir
       return Vizir.get(api, "/sites/#{@site_name.downcase}/jobs/#{@id}")
     end
 
-    def should_be_ending?
-      return get_remaining_time(self.end_time) < FIRST_ALERT_TIME
+    def should_be_ending?(now)
+      return Vizir.get_remaining_time(self.end_time, now) <= Vizir::FIRST_ALERT_TIME
     end
 
     def is_ended?(api)
