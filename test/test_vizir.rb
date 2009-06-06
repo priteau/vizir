@@ -17,4 +17,28 @@ class VizirTest < Test::Unit::TestCase
     e = assert_raise(RuntimeError) { Vizir.humanize_time(-1) }
     assert_equal("Can't humanize negative period", e.message)
   end
+
+  def test_learn_sites
+    FakeWeb.allow_net_connect = false
+    o = [
+      {
+        "site" => "nancy",
+        "uri" => "/sites/nancy"
+      },
+      {
+        "site" => "rennes",
+        "uri" => "/sites/rennes"
+      },
+      {
+        "site" => "luxembourg",
+        "uri" => "/sites/luxembourg"
+      }]
+    json = JSON.generate(o)
+    FakeWeb.register_uri(:get, "#{Vizir::APIURL}/sites?structure=simple", :string => json)
+    api = Vizir.get_api(Vizir::APIURL)
+    sites = o.delete_if { |hash| hash["site"] == "luxembourg" }
+    ignored_sites = ["luxembourg", "portoalegre"]
+    assert_equal(sites, Vizir.learn_sites(api, ignored_sites))
+  end
+
 end

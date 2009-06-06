@@ -4,7 +4,6 @@ $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'eventmachine'
 require 'growl'
-require 'json'
 require 'net/ssh/gateway'
 require 'optparse'
 require 'rest_client'
@@ -13,33 +12,10 @@ require 'vizir'
 FIRST_ALERT_TIME = 600
 ALERT_PERIOD = 60
 REFRESH_TIME = 3600
-IGNORE_SITES = ['grenoble-exp', 'grenoble-ext', 'grenoble-obs', 'luxembourg', 'portoalegre']
 
 def usage
   puts 'usage: vizir [ -h | --help ] [ -l | --login login_name ]'
   exit 1
-end
-
-def get(api, uri)
-  begin
-    return JSON.parse(api[uri + '?structure=simple'].get(:accept => 'application/json'))
-  rescue RestClient::RequestTimeout => e
-    # This should really be elsewhere, but will do for now
-    # Were we querying a specific site? If yes, remove it from $sites
-    if uri =~ /\/sites\/(\w+)/
-      $sites.delete_if { |site| site['site'] == "#{$1}" }
-    else
-      raise e
-    end    
-  rescue => e
-    if e.respond_to?('http_code')
-      puts "Error: #{e.http_code}:\n #{e.response.body}"
-      return nil
-    else
-      puts e.inspect
-      exit 1
-    end
-  end
 end
 
 def setup_ssh_tunnel
@@ -76,26 +52,23 @@ if $login == nil
 end
 
 gateway, port = setup_ssh_tunnel
-api = RestClient::Resource.new(apiuri(port), :timeout => 15)
+api = Vizir.get_api(apiuri(port))
 setup_growl
 
 def learn_new_jobs(api)
   $sites.each do |site|
     site_name = site['site']
-    unless IGNORE_SITES.include?(site_name)
-      jobs = get(api, "#{site['uri']}/jobs")
-      break if jobs == nil
-      jobs.each do |job|
-        if job['owner'] == $login
-          job_details = get(api, "#{job['uri']}")
-          break if job_details == nil
-          if job_details['jobType'] == 'INTERACTIVE'
-            jobid = job_details['Job_Id']
-
-            # If we don't yet know the job, record it in $jobs
-            if $jobs[jobid].nil?
-              $jobs[jobid] = Vizir::Job.new(jobid, Time.at(Integer(job_details['startTime']) + Integer(job_details['walltime'])), site_name.capitalize)
-            end
+    jobs = Vizir.get(api, "#{site['uri']}/jobs")
+    break if jobs == nil
+    jobs.each do |job|
+      if job['owner'] == $login
+        job_details = Vizir.get(api, "#{job['uri']}")
+        break if job_details == nil
+        if job_details['jobType'] == 'INTERACTIVE'
+          jobid = job_details['Job_Id']
+          # If we don't yet know the job, record it in $jobs
+          if $jobs[jobid].nil?
+            $jobs[jobid] = Vizir::Job.new(jobid, Time.at(Integer(job_details['startTime']) + Integer(job_details['walltime'])), site_name.capitalize)
           end
         end
       end
@@ -112,7 +85,7 @@ def alert_jobs(api)
     remaining_sec = get_remaining_time(job.end_time)
     if remaining_sec < FIRST_ALERT_TIME
       # Check if the job still exists before sending a notification
-      updatedjob = get(api, "/sites/#{job.site_name.downcase}/jobs/#{job.id}")
+      updatedjob = Vizir.get(api, "/sites/#{job.site_name.downcase}/jobs/#{job.id}")
       if updatedjob['state'] != 'Running'
         # Job is not running anymore, remove it from the hash
         $jobs.delete(jobid)
@@ -130,7 +103,7 @@ end
 
 # Learn the Grid'5000 sites
 $jobs = Hash.new
-$sites = get(api, '/sites')
+$sites = Vizir.learn_sites(api, Vizir::IGNORED_SITES)
 exit 1 if $sites == nil
 
 learn_new_jobs(api)
