@@ -68,4 +68,32 @@ class VizirTest < Test::Unit::TestCase
     end
   end
 
+  context 'A site-specific query' do
+    setup do
+      @uri = "#{Vizir::APIURL}/sites/rennes/jobs?structure=simple"
+    end
+
+    context 'which timeouts' do
+      setup do
+        FakeWeb.register_uri(:get, @uri, :exception => Timeout::Error)
+        @api = Vizir.get_api(Vizir::APIURL)
+      end
+
+      should 'remove the site from the sites list' do
+        $sites = [
+          {
+            "site" => "nancy",
+            "uri" => "/sites/nancy"
+          },
+          {
+            "site" => "rennes",
+            "uri" => "/sites/rennes"
+          }
+        ]
+        Vizir.learn_new_jobs_on_site(@api, $sites[1])
+        assert_equal [{ "site" => "nancy", "uri" => "/sites/nancy" }], $sites
+      end
+    end
+  end
+
 end

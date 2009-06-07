@@ -36,6 +36,7 @@ module Vizir
       # Were we querying a specific site? If yes, remove it from $sites
       if uri =~ /\/sites\/(\w+)/
         $sites.delete_if { |site| site['site'] == "#{$1}" }
+        return nil
       else
         raise e
       end
@@ -61,7 +62,7 @@ module Vizir
   def Vizir.learn_new_jobs_on_site(api, site)
     site_name = site['site']
     jobs = Vizir.get(api, "#{site['uri']}/jobs")
-    break if jobs == nil
+    return if jobs.nil?
     jobs.each do |job|
       if job['owner'] == $login
         job_details = Vizir.get(api, "#{job['uri']}")
