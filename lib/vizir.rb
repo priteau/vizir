@@ -90,7 +90,7 @@ module Vizir
 
   def Vizir.alert_jobs(api)
     $jobs.each do |jobid, job|
-      if job.should_be_ending?
+      if job.should_be_ending?(Time.now)
         # Check if the job still exists before sending a notification
         if job.is_ended?(api)
           # Job is not running anymore, remove it from the hash
