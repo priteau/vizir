@@ -90,7 +90,7 @@ module Vizir
 
   def Vizir.alert_jobs(api)
     $jobs.each do |jobid, job|
-      if job.should_be_ending?(Time.now)
+      if job.should_be_ending?
         # Check if the job still exists before sending a notification
         if job.is_ended?(api)
           # Job is not running anymore, remove it from the hash
@@ -125,8 +125,8 @@ module Vizir
       return Vizir.get(api, "/sites/#{@site_name.downcase}/jobs/#{@id}")
     end
 
-    def should_be_ending?(now)
-      return Vizir.get_remaining_time(self.end_time, now) <= Vizir::FIRST_ALERT_TIME
+    def should_be_ending?(time=Time.now())
+      return Vizir.get_remaining_time(self.end_time, time) <= Vizir::FIRST_ALERT_TIME
     end
 
     def is_ended?(api)
