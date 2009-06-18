@@ -9,6 +9,7 @@ begin
     gem.email = "pierre.riteau@gmail.com"
     gem.homepage = "http://github.com/priteau/vizir"
     gem.authors = ["Pierre Riteau"]
+    gem.rubyforge_project = "vizir"
     gem.add_dependency "eventmachine"
     gem.add_dependency "growlnotifier"
     gem.add_dependency "json"
@@ -17,6 +18,7 @@ begin
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
+  Jeweler::RubyforgeTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
