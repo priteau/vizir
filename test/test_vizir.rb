@@ -2,20 +2,21 @@ require 'test_helper'
 
 class VizirTest < Test::Unit::TestCase
   TIMES = [
-    [0,   [0,   "second"]],
-    [1,   [1,   "second"]],
-    [30,  [30,  "seconds"]],
-    [59,  [59,  "seconds"]],
-    [60,  [1,   "minute"]],
-    [119, [1,   "minute"]],
-    [120, [2,   "minutes"]]
+    [-119,  "now"],
+    [-1,    "now"],
+    [0,     "now"],
+    [1,     "in 1 second"],
+    [30,    "in 30 seconds"],
+    [59,    "in 59 seconds"],
+    [60,    "in 1 minute"],
+    [61,    "in 1 minute and 1 second"],
+    [119,   "in 1 minute and 59 seconds"],
+    [120,   "in 2 minutes"]
   ]
   def test_humanize_time
     TIMES.each do |seconds, result|
       assert_equal(result, Vizir.humanize_time(seconds))
     end
-    e = assert_raise(RuntimeError) { Vizir.humanize_time(-1) }
-    assert_equal("Can't humanize negative period", e.message)
   end
 
   def test_learn_sites

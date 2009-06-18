@@ -7,21 +7,24 @@ module Vizir
   FIRST_ALERT_TIME = 600
 
   def Vizir.humanize_time(time)
-    fail "Can't humanize negative period" if time < 0
+    return "now" if time <= 0
 
-    if time >= 60
-      remaining_time = time / 60
-      remaining_time_unit = "minute"
-    else
-      remaining_time = time
-      remaining_time_unit = "second"
+    time_units = []
+    minutes = time / 60
+    if minutes != 0
+      s = "#{minutes} minute"
+      s += "s" if minutes > 1
+      time_units.push(s)
     end
 
-    if remaining_time > 1
-      remaining_time_unit += "s"
+    seconds = time % 60
+    if seconds != 0
+      s = "#{seconds} second"
+      s += "s" if seconds > 1
+      time_units.push(s)
     end
 
-    return remaining_time, remaining_time_unit
+    return "in " + time_units.join(" and ")
   end
 
   def Vizir.get_remaining_time(end_time, now)
@@ -98,12 +101,8 @@ module Vizir
           next
         end
         remaining_sec = Vizir.get_remaining_time(job.end_time, Time.now)
-        if remaining_sec < 0
-          $stderr.puts "Error: negative time"
-          next
-        end
-        remaining_time, remaining_time_unit = Vizir.humanize_time(remaining_sec)
-        notify_via_growl(jobid, job.site_name, remaining_time, remaining_time_unit)
+        remaining_time = Vizir.humanize_time(remaining_sec)
+        notify_via_growl(jobid, job.site_name, remaining_time)
       end
     end
   end

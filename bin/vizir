@@ -27,8 +27,8 @@ def setup_growl
   $growl.register('Vizir', ['Job ending soon'])
 end
 
-def notify_via_growl(jobid, site_name, time, time_unit)
-  $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending in #{time} #{time_unit}.", :sticky => true)
+def notify_via_growl(jobid, site_name, time)
+  $growl.notify('Job ending soon', 'OAR job terminating soon', "Job #{jobid} in #{site_name} ending #{time}.", :sticky => true)
 end
 
 $login = nil
