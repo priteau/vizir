@@ -9,13 +9,8 @@ require 'optparse'
 require 'rest_client'
 require 'vizir'
 
-ALERT_PERIOD = 60
-REFRESH_TIME = 3600
-
-def usage
-  puts 'usage: vizir [ -h | --help ] [ -l | --login login_name ]'
-  exit 1
-end
+$alert_period = 60
+$refresh_period = 3600
 
 def setup_ssh_tunnel
   gateway = Net::SSH::Gateway.new('access.grenoble.grid5000.fr', $login)
@@ -37,13 +32,26 @@ def notify_via_growl(jobid, site_name, time, time_unit)
 end
 
 $login = nil
-opts = OptionParser.new
-opts.on('-h', '--help') { usage }
-opts.on('-l', '--login STRING', String) { |str| $login = str }
-opts.parse(ARGV)
+
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: vizir [options]"
+  opts.separator("")
+
+  opts.separator("Options:")
+  opts.on('-a', '--alert-period TIME', Integer, "Job alert period (seconds), default: #{$alert_period}") { |t| $alert_period = t }
+  opts.on('-h', '--help', 'Print help') do
+    puts opts
+    exit
+  end
+  opts.on('-l', '--login LOGIN', String, "User login on Grid\'5000") { |str| $login = str }
+  opts.on('-m', '--min-job-time TIME', Integer, "Minimum job time (seconds), default: #{$refresh_period}") { |t| $refresh_period = t }
+end
+
+opts.parse!(ARGV)
 
 if $login == nil
-  usage
+  puts opts
+  exit
 end
 
 gateway, port = setup_ssh_tunnel
@@ -59,8 +67,8 @@ Vizir.learn_new_jobs(api)
 Vizir.alert_jobs(api)
 
 EventMachine::run {
-  EventMachine::PeriodicTimer.new(REFRESH_TIME) { Vizir.learn_new_jobs(api) }
-  EventMachine::PeriodicTimer.new(ALERT_PERIOD) { Vizir.alert_jobs(api) }
+  EventMachine::PeriodicTimer.new($refresh_period) { Vizir.learn_new_jobs(api) }
+  EventMachine::PeriodicTimer.new($alert_period) { Vizir.alert_jobs(api) }
 }
 
 gateway.shutdown!
