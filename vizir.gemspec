@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vizir}
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pierre Riteau"]
-  s.date = %q{2009-06-02}
+  s.date = %q{2009-06-18}
   s.default_executable = %q{vizir}
   s.email = %q{pierre.riteau@gmail.com}
   s.executables = ["vizir"]
@@ -24,18 +24,19 @@ Gem::Specification.new do |s|
      "bin/vizir",
      "lib/vizir.rb",
      "test/test_helper.rb",
-     "test/vizir_test.rb",
+     "test/test_vizir.rb",
      "vizir.gemspec"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/priteau/vizir}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{vizir}
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Growl notifications for Grid'5000 jobs}
   s.test_files = [
     "test/test_helper.rb",
-     "test/vizir_test.rb"
+     "test/test_vizir.rb"
   ]
 
   if s.respond_to? :specification_version then
