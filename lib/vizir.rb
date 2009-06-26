@@ -74,7 +74,9 @@ module Vizir
           jobid = job_details['Job_Id']
           # If we don't yet know the job, record it in $jobs
           if $jobs[jobid].nil?
-            $jobs[jobid] = Vizir::Job.new(jobid, Time.at(Integer(job_details['startTime']) + Integer(job_details['walltime'])), site_name.capitalize)
+            ending_time = Time.at(Integer(job_details['startTime']) + Integer(job_details['walltime']))
+            $jobs[jobid] = Vizir::Job.new(jobid, ending_time, site_name.capitalize)
+            $log.info("learned job #{jobid} in #{site_name.capitalize} ending on #{ending_time.strftime('%b %d')} at #{ending_time.strftime('%H:%M:%S')}")
           end
         end
       end

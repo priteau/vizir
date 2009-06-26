@@ -4,6 +4,7 @@ $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'eventmachine'
 require 'growl'
+require 'logger'
 require 'net/ssh/gateway'
 require 'optparse'
 require 'rest_client'
@@ -11,6 +12,9 @@ require 'vizir'
 
 $alert_period = 60
 $refresh_period = 3600
+$log = Logger.new(STDOUT)
+$log.datetime_format = "%H:%M:%S"
+$log.level = Logger::WARN
 
 def setup_ssh_tunnel
   gateway = Net::SSH::Gateway.new('access.grenoble.grid5000.fr', $login)
@@ -45,6 +49,7 @@ opts = OptionParser.new do |opts|
   end
   opts.on('-l', '--login LOGIN', String, "User login on Grid\'5000") { |str| $login = str }
   opts.on('-m', '--min-job-time TIME', Integer, "Minimum job time (seconds), default: #{$refresh_period}") { |t| $refresh_period = t }
+  opts.on('-v', '--verbose', "Print debugging messages") { $log.level = Logger::INFO }
 end
 
 opts.parse!(ARGV)
