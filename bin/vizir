@@ -52,11 +52,18 @@ opts = OptionParser.new do |opts|
   opts.on('-v', '--verbose', "Print debugging messages") { $log.level = Logger::INFO }
 end
 
-opts.parse!(ARGV)
+begin
+  opts.parse!(ARGV)
+rescue
+  puts "Error: " + $!
+  puts "\n" + opts.to_s
+  exit 1
+end
 
 if $login == nil
-  puts opts
-  exit
+  puts "Error: login is required"
+  puts "\n" + opts.to_s
+  exit 1
 end
 
 gateway, port = setup_ssh_tunnel
