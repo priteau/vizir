@@ -35,7 +35,7 @@ class VizirTest < Test::Unit::TestCase
         "uri" => "/sites/luxembourg"
       }]
     json = JSON.generate(o)
-    FakeWeb.register_uri(:get, "#{Vizir::APIURL}/sites?structure=simple", :string => json)
+    FakeWeb.register_uri(:get, "#{Vizir::APIURL}/sites?structure=simple", :body => json)
     api = Vizir.get_api(Vizir::APIURL)
     sites = o.delete_if { |hash| hash["site"] == "luxembourg" }
     ignored_sites = ["luxembourg", "portoalegre"]
