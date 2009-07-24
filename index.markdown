@@ -24,7 +24,7 @@ Simply run Vizir in the background, specifying your Grid'5000 login name with th
 
     $ vizir --login priteau &
 
-By default, Vizir triggers a notification every minute during the 10 minutes preceding the end of the reservation.
+By default, Vizir triggers a notification every minute during the 10 minutes preceding the end of a reservation.
 
 ## Installation
 
