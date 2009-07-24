@@ -19,7 +19,7 @@ Install the gem:
 
     $ sudo gem install priteau-vizir
 
-Vizir uses HotCocoa to trigger Growl notifications. HotCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leopard.
+Vizir uses RubyCocoa to trigger Growl notifications. RubyCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leopard.
 
 Run Vizir in the background, using the <tt>--login</tt> switch with your Grid'5000 login name.
 
