@@ -39,6 +39,13 @@ Install the gem:
 Vizir uses [RubyCocoa](http://rubycocoa.sourceforge.net/) to trigger Growl notifications.
 RubyCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leopard.
 
+## Bug reports / Feature requests
+
+You can report any bug or ask for features by opening a ticket on [GitHub](http://github.com/priteau/vizir/issues) and labeling it with *bug* or *feature*.
+Please open a different ticket for each issue.
+
+Or, if you're old school, you can send me an [email](mailto:priteau@gmail.com).
+
 ## Getting the source
 
 Clone it from [GitHub](http://github.com/priteau/vizir):
