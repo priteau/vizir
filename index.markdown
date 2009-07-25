@@ -13,10 +13,10 @@ title: Vizir | Growl notifications for Grid'5000 jobs
 
 Ever been disconnected from Grid'5000 machines with a message like this one, losing part or all of your work?
 
-Vizir is a simple Ruby script that monitors your interactive jobs on [Grid'5000](http://www.grid5000.fr/).
+Vizir is a simple Ruby script for [Mac OS X](http://www.apple.com/macosx/) that monitors your interactive jobs on [Grid'5000](http://www.grid5000.fr/).
 It triggers [Growl](http://growl.info/) notifications when your reservations are going to terminate, allowing you to save your work and/or your deployed environments.
 
-Vizir only supports [Mac OS X](http://www.apple.com/macosx/).
+![A Growl notification](images/Growl.png)
 
 ## Usage
 
@@ -38,6 +38,13 @@ Install the gem:
 
 Vizir uses [RubyCocoa](http://rubycocoa.sourceforge.net/) to trigger Growl notifications.
 RubyCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leopard.
+
+## Advanced usage
+
+You can even send push notifications to your iPhone using [Prowl](https://prowl.weks.net/).
+No more nodes shutting down silently while you take a coffee break!
+
+![A Prowl push notification](images/Prowl.png)
 
 ## Bug reports / Feature requests
 
