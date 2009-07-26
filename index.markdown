@@ -41,7 +41,7 @@ RubyCocoa is shipped with Mac OS X 10.5, so it should work out of the box on Leo
 
 ## Advanced usage
 
-You can even send push notifications to your iPhone using [Prowl](https://prowl.weks.net/).
+You can even forward notifications to your iPhone using [Prowl](https://prowl.weks.net/).
 No more nodes shutting down silently while you take a coffee break!
 
 ![A Prowl push notification](images/Prowl.png)
