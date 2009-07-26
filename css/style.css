@@ -22,6 +22,8 @@ img {
 
 code {
   margin-left: 25px;
+  background-color: #EEEEEE;
+  padding: 2px;
 }
 
 a:link { 
