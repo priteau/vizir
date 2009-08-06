@@ -8,7 +8,7 @@ begin
     gem.summary = "Growl notifications for Grid'5000 jobs"
     gem.description = %Q{Vizir is a simple Ruby script for Mac OS X that monitors your interactive jobs on Grid'5000. It triggers Growl notifications when your reservations are going to terminate, allowing you to save your work and/or your deployed environments.}
     gem.email = "priteau@gmail.com"
-    gem.homepage = "http://github.com/priteau/vizir"
+    gem.homepage = "http://priteau.github.com/vizir/"
     gem.authors = ["Pierre Riteau"]
     gem.rubyforge_project = "vizir"
     gem.add_dependency "eventmachine"
