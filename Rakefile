@@ -6,6 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "vizir"
     gem.summary = "Growl notifications for Grid'5000 jobs"
+    gem.description = %Q{Vizir is a simple Ruby script for Mac OS X that monitors your interactive jobs on Grid'5000. It triggers Growl notifications when your reservations are going to terminate, allowing you to save your work and/or your deployed environments.}
     gem.email = "pierre.riteau@gmail.com"
     gem.homepage = "http://github.com/priteau/vizir"
     gem.authors = ["Pierre Riteau"]
